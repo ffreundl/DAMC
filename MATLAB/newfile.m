@@ -1,1 +1,1 @@
-        1 fichier(s) copi‚(s).
+fred=[0 0];
