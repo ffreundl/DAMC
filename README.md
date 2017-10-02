@@ -1,2 +1,2 @@
 # DAMC
-Data analysis and model calssification course EPFL [Imler-Freundler_Freundler]
+Data analysis and model calssification course EPFL [Imler-Freundler-Freundler]
