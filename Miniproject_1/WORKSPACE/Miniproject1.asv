@@ -1,7 +1,0 @@
-load spikes
-
-idx = kmeans(spikesPCA,3)
-gplotmatrix(spikesPCA,[],idx)
-cluster1 = find(idx == 1) %find each neurons position in spikes PCA that belongs to cluster 1
-cluster2 = find(idx==2)
-mean1 = mean(spikes(cluster1))
