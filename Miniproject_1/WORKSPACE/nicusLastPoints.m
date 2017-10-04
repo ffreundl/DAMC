@@ -33,3 +33,17 @@ D
 %There is two things we want to minimize : the sum of the point-to-centroid
 %distance sums (considered as an error measurement) and the number of cluster
 % (a big number gives a big complexity, until the preposterous case of k=6000)
+%%
+%last part, finding the best number of groups regarding different criteria
+%MATLAB documentation give four criteria
+%CalinskiHarabasz
+%Silhouette
+%gap
+%DaviesBouldin
+names=['CalinskiHarabasz','Silhouette','Gap','DaviedBouldin'];
+CalHar=evalclusters(spikesPCA,IDX,'CalinskiHarabasz');
+Sil=evalclusters(spikesPCA,IDX,'Silhouette');
+gap=evalclusters(spikesPCA,'kmeans','Gap','KList',K);
+DavBou=evalclusters(spikesPCA,IDX,'DaviesBouldin');
+
+optimalValues=[CalHar.OptimalK, Sil.OptimalK, gap.OptimalK, DavBou.OptimalK];
