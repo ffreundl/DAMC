@@ -49,5 +49,5 @@ DavBou=evalclusters(spikesPCA,IDX,'DaviesBouldin');
 optimalValues=[CalHar.OptimalK, Sil.OptimalK, gap.OptimalK, DavBou.OptimalK];
 
 for indx=1:4
-	fprintf('for %s criterion the optimal value is %d\n\n',names(i),optimalValues(i));
+	fprintf('for %s criterion the optimal value is %d\n\n',names(indx),optimalValues(indx));
 end
