@@ -326,7 +326,7 @@ plot(threshVals, ClassErrorVect, 'b')
 hold on
 plot(threshVals, ClassifErrorVect,'r')
 
-BestThresh = interp1(x,y,min(ClassErrorVect)) % Returns the best threshold, which corresponds to the initially chosen one since we took a threshold being exactly the same distance to class 0 mean as to class 1 mean
+min(ClassErrorVect)
 %% Generalising for all features
 
 [h,p] = ttest2(features(idx0,:),features(idx1,:));
