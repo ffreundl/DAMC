@@ -33,67 +33,43 @@ hold on;
 a4 = histogram(d1,'FaceColor','r', 'Normalization', 'probability')
 legend('Class 0','Class 1')
 
-%Histograms of feature 385, differently distributed for class 0 and 1
-
-figure('name','Histograms of feature #385, diffeerently distributed for class 0 and 1')
-a3 = histogram(features(idx0,385),'FaceColor','b','Tag','Class 0', 'Normalization', 'probability')
-hold on;
-a4 = histogram(features(idx1,385),'FaceColor','r', 'Normalization', 'probability')
-legend('Class 0','Class 1')
+% %Histograms of feature 385, differently distributed for class 0 and 1
+% 
+% figure('name','Histograms of feature #385, diffeerently distributed for class 0 and 1')
+% a3 = histogram(features(idx0,385),'FaceColor','b','Tag','Class 0', 'Normalization', 'probability')
+% hold on;
+% a4 = histogram(features(idx1,385),'FaceColor','r', 'Normalization', 'probability')
+% legend('Class 0','Class 1')
 
 %% Point 2) Boxplot of these features
 
-% Similarily distributed feature (310)
-figure('name','Boxplots for feature #310, similarily distributed for class 0 and 1');
+simGroup = [ones(size(s0));2*ones(size(s1))];
+difGroup = [ones(size(s0));2*ones(size(s1))];
+figure('name','Boxplots for features #310 (similar distribution for both classes) and #497 (dissimilar distribution for both classes)')
 subplot(1,2,1)
-boxplot(s0); %class 0
-title('Class 0')
+boxplot([s0;s1], simGroup,'Labels',{'Class 0','Class1'})
+title('Boxplots for feature #310');
 grid on;
 subplot(1,2,2)
-boxplot(s1); %class 1
-title('Class 1')
+boxplot([d0;d1], difGroup,'Labels',{'Class 0','Class 1'})
+title('Boxplots for feature #497');
 grid on;
 
-% Differently distributed feature (497)
-figure('name','Boxplots for feature #497, differently distributed for class 0 and 1');
-subplot(1,2,1)
-boxplot(d0); % class 0
-title('Class 0')
-grid on;
-subplot(1,2,2)
-boxplot(d1); % class 1
-title('Class 1')
-grid on;
 
 %% Point 3) Boxplot of these features WITH NOTCH. The notch represent the 95% bilateral confidence interval,
-% wihch means: 
+% which means: 
 
-% Similarily distributed feature (310)
-figure('name','Notched boxplots for feature #310, similarily distributed for class 0 and 1');
+simGroup = [ones(size(s0));2*ones(size(s1))];
+difGroup = [ones(size(s0));2*ones(size(s1))];
+figure('name','Notched boxplots for features #310 (similar distribution for both classes) and #497 (dissimilar distribution for both classes)')
 subplot(1,2,1)
-boxplot(s0,'Notch','on'); %class 0
-title('Class 0')
+boxplot([s0;s1], simGroup,'Labels',{'Class 0','Class1'},'Notch','on')
+title('Boxplots for feature #310');
 grid on;
 subplot(1,2,2)
-boxplot(s1,'Notch','on'); %class 1
-title('Class 1')
+boxplot([d0;d1], difGroup,'Labels',{'Class 0','Class 1'},'Notch','on')
+title('Boxplots for feature #497');
 grid on;
-
-% Differently distributed feature (497)
-Fig4 = figure('name','Notched boxplots for feature #497, differently distributed for class 0 and 1');
-subplot(1,2,1)
-boxplot(d0,'Notch','on'); % class 0
-title('Class 0')
-grid on;
-subplot(1,2,2)
-boxplot(d1,'Notch','on'); % class 1
-title('Class 1')
-grid on;
-saveas(gcf, 'test.svg')
-saveas(gcf, 'test.jpg')
-
-
-%%%^^^^^^^^^^^LABELLLSSS??
 
 %% Point 4) ttest between similarily and dissimilarily distributed features 
 
@@ -138,7 +114,7 @@ hold on
 plot(features(:,528),'r.');
 hold on
 line(x,y,'Color','black','LineStyle','--')
-legend('feature #497', 'feature #528','thresh. feat. #497')
+legend('feature #497', 'feature #528','thresh. feat. #497','Location','NW')
 % Counting samples classified as class 0 (above threshold following the
 % correponding histogram of feature 497) and class 1 (under threshold
 % following the correponding histogram of feature 497)
@@ -326,8 +302,31 @@ plot(threshVals, ClassErrorVect, 'b')
 hold on
 plot(threshVals, ClassifErrorVect,'r')
 
-BestThresh = interp1(x,y,min(ClassErrorVect)) % Returns the best threshold, which corresponds to the initially chosen one since we took a threshold being exactly the same distance to class 0 mean as to class 1 mean
+minClassError = find(ClassErrorVect == min(ClassErrorVect));% Returns the best threshold, which corresponds to the initially chosen one since we took a threshold being exactly the same distance to class 0 mean as to class 1 mean
+BestThresh = threshVals(minClassError)
+
+%% Scaling up to 2 features at once
+
+% Vector of different features for class 0 and 1 for feature 528 which is
+% also discriminant (we already have d0 and d1 for feature 497)
+d0_528 = features(idx0,528);
+d1_528 = features(idx1,528);
+
+figure('name','Feature 497 as a function of feat. 528, for class 0 and 1')
+plot(d0,d0_528,'b.') % Class 0, 2 features
+hold on
+plot(d1,d1_528,'r.')
+legend('Class 0', 'Class 1','Location','NW')
+% We could imagin using a linear discriminant function or even use a kmeans
+% clustering in order to separate the 2 classes, but we see that the
+% two classes are not well separated enough. Moreover, event if we could
+% separate the 2 classes using a linear discriminant in 2D (using two
+% features at once), the complexity would have to be increased too much for
+% higher dimensions (up to 2400), which let us suppose that features
+% thresholding reaches a limit quickly.
+
 %% Generalising for all features
 
 [h,p] = ttest2(features(idx0,:),features(idx1,:));
 relevantFeatures = find(h == 1); % Finds the features for which the null hypothesis is rejected (h = 1), i.e. features allowing separation of classes
+
