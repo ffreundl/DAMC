@@ -1,22 +1,27 @@
+
 %cross-vaidation
 %POINT 1
 %sur 648 observation crée 10 sets
 %contruis un objet c qui définie une partition aléatoire pour une
 %10-fold-cv sur 648 samples la partition divise les samples en 10
-%subsamples(folds) choisis de manière aléatoire mais de taille égale.
+%subsamples(folds) choisis de manière aléatoire mais de taille égale. 
 %les folds peuvent voir leur taille varier de 1 si ils ne peuvent pas se
 %diviser exactement 
 
-cp=cvpartition(648,'kfold',10);
+cp=cvpartition(648,'kfold',10); % Créée une REPARTITION de 10 boxes avec à chaque fois 10% de 1 (= test set) et 90% de 0 (= training)
+                                   % On va ensuite appliquer cette
+                                   % répartition à 'labels' pour avoir
+                                   % vraiment des samples.
 
 %affiche la répartition 
 cp.disp;
 
 %cp.test(i) renvoie un vecteur 648x1 de 1 et 0. Les index des 1 correspondent aux
-%index des valeurs de subfeatures qui sont présents dans le test_set(i)
+%index des valeurs de subfe3atures qui sont présents dans le test_set(i)
 %si on voulait les afficher on ferait : test_set = subfeatures(find(cp.test(i)==1),:);
 % avec le code ci-dessous on vérifie combien d'objets de classe 1 et de
-% classe 0 on trouve dans chaque fold
+% classe 0 on trouve dans chaque fold. En gros tous les X, il choisit un
+% sample qu'il labelle "1" et qui va servir dans le test set.
 
 % for i=1:10
 %    sum(labels(cp.test(i))==1)
@@ -30,7 +35,8 @@ cp.disp;
 %labels et la méthode fait en sorte que dans chaque sous-sample la
 %proportion de classe soit la meme que dans labels soit ici à chaque fois
 %51 ou 52 objets de classe 1
-cv=cvpartition(labels,'kfold',10);
+cv=cvpartition(labels,'kfold',10); % Assure que la proportion est gardée
+                                    % on appelle ça stratifié
 
 
 %POINT 2
@@ -40,18 +46,22 @@ cv=cvpartition(labels,'kfold',10);
 classiError_linear=[];
  
 for k=1:10
-    training_set = subfeatures(find(cv.training(k)==1),:);
-    test_set = subfeatures(find(cv.test(k)==1),:);
+    training_set = subfeatures(find(cv.training(k)==1),:); % Assure que l'on prenne les samples pour le training corrects de subfeatures
+    test_set = subfeatures(find(cv.test(k)==1),:); % pareil avec test
    
     classifier = fitcdiscr(training_set, labels(find(cv.training(k)==1),:), 'discrimtype', 'linear');
     yhat = predict(classifier,test_set);
     [yhatLine,yhatCol] = size(yhat);
     
-    labels_test= labels(find(cv.test(k)==1));
-    classiError_linear(1,k) =  sum(yhat~=labels_test)/yhatLine;
+    labels_test= labels(find(cv.test(k)==1)); % Donnera la VRAIE classe (0 ou 1) des entités du test set..
+    classiError_linear(1,k) =  sum(yhat~=labels_test)/yhatLine; % .. on les compare avec la valeur de classe des entités du test set d'après notre modèle de classificateur. 
+                                % Chaque fois que la valeur de classe
+                                % donnée par le modèle est différente de la
+                                % VRAIE valeur de classe, on a un "1" qui
+                                % sort de la comparaison. 
 end
 
-erreur_classi_linear = mean(classiError_linear);
+erreur_classi_linear = mean(classiError_linear); % Moyenne sur les 10 Erreur de classification, pas une métrique style Sdev...
 
 %10-fold cv pour le classifier DIAGLINEAR
 classiError_diagli=[];
@@ -95,12 +105,13 @@ end
 
 erreur_classi_quadra=mean(classiError_quadra);
 
-%POINT 3
+%% POINT 3
+disp("Leave-One-Out");
 %leave-one out cross validation : k = N 
 %même procédure qu'avant sauf qu'ici chaque sample sert de training set et
 %le modèle résultant est teste sur un seul sample
 
-cd=cvpartition(labels,'kfold',648);
+cd=cvpartition(labels,'kfold',648); % partitionne 648 fois
 cd.disp;
 
 %on recommence les déclarations de matrices vides pour les erreurs
@@ -117,7 +128,7 @@ for k=1:648
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd.test(k)==1));
-    classiError_leave_one_lin(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_lin(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_linear=mean(classiError_leave_one_lin);
@@ -133,7 +144,7 @@ for k=1:648
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd.test(k)==1));
-    classiError_leave_one_diaglin(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_diaglin(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_diaglin=mean(classiError_leave_one_diaglin);
@@ -151,7 +162,7 @@ for k=1:648
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd.test(k)==1));
-    classiError_leave_one_quadri(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_quadri(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_quadri=mean(classiError_leave_one_quadri);
@@ -164,7 +175,7 @@ erreur_classi_leave_one_quadri=mean(classiError_leave_one_quadri);
 %répartition différentes des samples dans les set
 
 classiError_linear_repartition=[];
-cv_new=repartition(cv);
+cv_new=repartition(cv); % On lui passe en paramètre une distribution que l'on veut éviter (car on l'a déjà en l'occurence)
 
 %on teste si les partitions sont bien différentes : retourne 0 si
 %différents
@@ -224,6 +235,8 @@ end
 
 erreur_classi_quadra_repartition=mean(classiError_quadra_repartition);
 
+
+
 cd_new=repartition(cd);
 
 classiError_leave_one_linear_new=[];
@@ -231,14 +244,14 @@ erreur_classi_leave_one_linear_new=[];
 
 for k=1:648
     training_set = subfeatures(find(cd_new.training(k)==1),:);
-    test_set = subfeatures(find(cd.test(k)==1),:);
+    test_set = subfeatures(find(cd_new.test(k)==1),:);
    
     classifier = fitcdiscr(training_set, labels(find(cd_new.training(k)==1),:), 'discrimtype', 'linear');
     yhat = predict(classifier,test_set);
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd_new.test(k)==1));
-    classiError_leave_one_linear_new(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_linear_new(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_linear_new=mean(classiError_leave_one_linear_new);
@@ -254,13 +267,14 @@ for k=1:648
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd_new.test(k)==1));
-    classiError_leave_one_diaglinear_new(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_diaglinear_new(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_diaglinear_new=mean(classiError_leave_one_diaglinear_new);
 
 classiError_leave_one_quadri_new=[];
 erreur_classi_leave_one_quadri_new=[];
+
 
 for k=1:648
     training_set = subfeatures(find(cd_new.training(k)==1),:);
@@ -271,7 +285,7 @@ for k=1:648
     [yhatLine,yhatCol] = size(yhat);
     
     labels_test= labels(find(cd_new.test(k)==1));
-    classiError_leave_one_quadri_new(1,k) =  sum(yhat~=labels_test)/648;
+    classiError_leave_one_quadri_new(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
 erreur_classi_leave_one_quadri_new = mean(classiError_leave_one_quadri_new);
