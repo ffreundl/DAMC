@@ -6,11 +6,14 @@ load('dataset_ERP.mat')
 N=50;
 Kin=4;
 Kout=3;
-validationError=zeros(N,Kin);
+validationError=zeros(N,Kin,Kout);
 %intermediate matrix needed for calculation, but useless for final
 %assessment
 testErrorIntermediate=zeros(N,Kout);
+trainingError=zeros(N,Kin,Kout);
 testError=zeros(1,Kout);
+optimalValidationError=zeros(1,Kout);
+optimalTrainingError=zeros(1,Kout);
 
 %number of features selected
 Nsel=zeros(1,Kout);
@@ -50,6 +53,9 @@ for i=1:Kout
     %if find return several values, it takes the smallest.
     Nsel(i)=argmin(1);
     testError(i)=testErrorIntermediate(Nsel(i),i);
+    optimalValidationError(i)=min(meanValidation);
+    optimalTrainingError(i)=
+    
     
 end
 
