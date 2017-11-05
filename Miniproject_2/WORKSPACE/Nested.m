@@ -6,14 +6,15 @@ load('dataset_ERP.mat')
 N=50;
 Kin=4;
 Kout=3;
-validationError=zeros(N,Kin,Kout);
+
 %intermediate matrix needed for calculation, but useless for final
 %assessment
 testErrorIntermediate=zeros(N,Kout);
 trainingError=zeros(N,Kin,Kout);
+validationError=zeros(N,Kin,Kout);
 testError=zeros(1,Kout);
-optimalValidationError=zeros(1,Kout);
-optimalTrainingError=zeros(1,Kout);
+optimalValidationError=zeros(Kin,Kout);
+optimalTrainingError=zeros(Kin,Kout);
 
 %number of features selected
 Nsel=zeros(1,Kout);
@@ -35,7 +36,9 @@ for i=1:Kout
             valFeatures=validationSet(:,discrimIndices(1:k));
             classifier=fitcdiscr(trFeatures, trainingLabels, 'discrimtype', 'diaglinear');
             predicted=predict(classifier,valFeatures);
-            validationError(k,j)=classerror(validationLabels,predicted);
+            validationError(k,j,i)=classerror(validationLabels,predicted);
+            yhat=predict(classifier,trFeatures);
+            trainingError(k,j,i)=classerror(trainingLabels,yhat);
             
             %althoug we don't know yet the best model according to
             %validation, we store all possible test errors and we'll keep
@@ -48,17 +51,33 @@ for i=1:Kout
         end
         
     end
-    meanValidation=mean(validationError,2);
+    meanValidation=mean(validationError(:,:,i),2);
     argmin=find(meanValidation==min(meanValidation));
     %if find return several values, it takes the smallest.
     Nsel(i)=argmin(1);
     testError(i)=testErrorIntermediate(Nsel(i),i);
-    optimalValidationError(i)=min(meanValidation);
-    optimalTrainingError(i)=
+    optimalValidationError(:,i)=(validationError(Nsel(i),:,i))';
+    optimalTrainingError(:,i)=(trainingError(Nsel(i),:,i))';
+    
     
     
 end
 
+disp(Nsel);
+disp(testError);
+%% boxplot
+figure
+hold on
+testError2=[ones(Kin,1).*testError(1),ones(Kin,1).*testError(2),ones(Kin,1).*testError(3)];
+%Matrix(:) convert the matrix into a column (or a row with')
+toBePlotted=[testError2(:);optimalValidationError(:);optimalTrainingError(:)];
+boxplotLabels=[ones(Kin*Kout,1); 2*ones(Kin*Kout,1);3*ones(Kin*Kout,1)];
             
+ont=boxplot(toBePlotted,boxplotLabels);
+title('Box Plot');
+ylabel('error');
+
+hold off;
+
 
 
