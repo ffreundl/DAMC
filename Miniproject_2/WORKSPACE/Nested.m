@@ -64,14 +64,17 @@ for i=1:Kout
 end
 
 disp(Nsel);
-disp(testError);
+disp(mean(testError));
+%"16 15 15 for an error of 0.2062"
+
+
 %% boxplot
 figure
 hold on
-testError2=[ones(Kin,1).*testError(1),ones(Kin,1).*testError(2),ones(Kin,1).*testError(3)];
+
 %Matrix(:) convert the matrix into a column (or a row with')
-toBePlotted=[testError2(:);optimalValidationError(:);optimalTrainingError(:)];
-boxplotLabels=[ones(Kin*Kout,1); 2*ones(Kin*Kout,1);3*ones(Kin*Kout,1)];
+toBePlotted=[testError';optimalValidationError(:);optimalTrainingError(:)];
+boxplotLabels=[ones(size(testError')); 2*ones(Kin*Kout,1);3*ones(Kin*Kout,1)];
             
 ont=boxplot(toBePlotted,boxplotLabels);
 title('Box Plot');
