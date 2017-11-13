@@ -1,4 +1,8 @@
+close all;
+clc;
+clear all;
 
+load dataset_ERP.mat % 2400 features and 648 samples 
 %cross-vaidation
 %POINT 1
 %sur 648 observation crée 10 sets
@@ -7,6 +11,9 @@
 %subsamples(folds) choisis de manière aléatoire mais de taille égale. 
 %les folds peuvent voir leur taille varier de 1 si ils ne peuvent pas se
 %diviser exactement 
+
+subfeatures = features(:,1:5:300);
+
 
 cp=cvpartition(648,'kfold',10); % Créée une REPARTITION de 10 boxes avec à chaque fois 10% de 1 (= test set) et 90% de 0 (= training)
                                    % On va ensuite appliquer cette

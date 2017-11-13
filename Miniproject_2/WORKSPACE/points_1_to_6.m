@@ -1,4 +1,6 @@
 close all
+clear all
+clc
 
 load dataset_ERP.mat % 2400 features and 648 samples 
 
@@ -305,6 +307,7 @@ plot(threshVals, ClassifErrorVect,'r')
 minClassError = find(ClassErrorVect == min(ClassErrorVect));% Returns the best threshold, which corresponds to the initially chosen one since we took a threshold being exactly the same distance to class 0 mean as to class 1 mean
 BestThresh = threshVals(minClassError)
 
+
 %% Scaling up to 2 features at once
 
 % Vector of different features for class 0 and 1 for feature 528 which is
@@ -312,11 +315,23 @@ BestThresh = threshVals(minClassError)
 d0_528 = features(idx0,528);
 d1_528 = features(idx1,528);
 
-figure('name','Feature 497 as a function of feat. 528, for class 0 and 1')
-plot(d0,d0_528,'b.') % Class 0, 2 features
-hold on
-plot(d1,d1_528,'r.')
-legend('Class 0', 'Class 1','Location','NW')
+figure('name','Feature 497 as a function of feat. 528, for class 0 and 1');
+lapin0 = plot(d0,d0_528,'b.'); % Class 0, 2 features
+xlim([-8 6])
+hold on;
+lapin1 = plot(d1,d1_528,'r.');
+xlim([-8 6])
+hold on;
+% Create fictive (visual) thresholds that will weem to segregate the 2
+% classes:
+t1 = [-8 7];
+t2 = [6 -2.6];
+plot(t1,t2,'k');
+xlabel('feature 497');
+ylabel('feature 528');
+legend('Class 0', 'Class 1','threshold','Location','NW');   
+
+
 % We could imagin using a linear discriminant function or even use a kmeans
 % clustering in order to separate the 2 classes, but we see that the
 % two classes are not well separated enough. Moreover, event if we could
@@ -324,6 +339,8 @@ legend('Class 0', 'Class 1','Location','NW')
 % features at once), the complexity would have to be increased too much for
 % higher dimensions (up to 2400), which let us suppose that features
 % thresholding reaches a limit quickly.
+
+
 
 %% Generalising for all features
 
