@@ -241,10 +241,27 @@ testErrorDiaglin=mean(testError(2,:));
 testErrorDiagQuadra=mean(testError(3,:));
 %% final step
 finalTestErrors=zeros(1,4);
-for u=i:4
+modelType={'linear','diaglinear','diagquad'};
+for u=1:4
     bestModel=find(validationErrorVect(:,u)==min(validationErrorVect(:,u)));
     finalTestErrors(u)=testError(bestModel,u);
 end
+disp('the errors are')
+disp(finalTestErrors);
+disp('with mean and sdev')
+disp(mean(finalTestErrors));disp(std(finalTestErrors));
+disp('models are')
+showIndices=1:20;
+for u=1:4
+   bestModel=find(validationErrorVect(:,u)==min(validationErrorVect(:,u)));
+   disp(modelType(bestModel)); 
+   disp(showIndices(modelHype(bestModel,:,u)));
+    
+end
+
+
+
+
 
 
     

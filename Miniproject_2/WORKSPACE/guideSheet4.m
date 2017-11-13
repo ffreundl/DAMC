@@ -38,10 +38,13 @@ hold off
 fisherOptimum =find(mean(testingError,2)==min(mean(testingError,2)));
 %fisherOptimum2=find(mean(trainingError,2)==min(mean(trainingError,2)));
 
+<<<<<<< HEAD
 disp('best perf for diaglinear')
 disp(fisherOptimum);
 disp(min(mean(testingError,2)));
 
+=======
+>>>>>>> d71979afe7f876f41db2e199c6eff150b186d21c
 %%with fisher method
 trainingError2=zeros(n,k);
 testingError2=zeros(n,k);
@@ -197,4 +200,12 @@ disp(min(randomMeanError(:)));
 %for linear: 23 0.1944
 %pseudoquad: 19 0.1340
 %diagquad: 17 0.1783
+<<<<<<< HEAD
 %the best performance of random is 0.3991
+=======
+%the best performance of random is 0.3991
+
+
+
+
+>>>>>>> d71979afe7f876f41db2e199c6eff150b186d21c
