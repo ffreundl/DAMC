@@ -46,8 +46,8 @@ end
 
 % Withour prior
 % Linear
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'linear')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'linear')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -83,8 +83,8 @@ ClassifAccu = (Correct/labelsLine)*100;
 ClassifError1 = 100-ClassifAccu
 
 % Diaginear
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'diaglinear')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'diaglinear')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -156,8 +156,8 @@ ClassifAccu = (Correct/labelsLine)*100;
 ClassifError3 = 100-ClassifAccu
 
 % Diagquadratic
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'diagquadratic')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'diagquadratic')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -191,10 +191,11 @@ ClassError4 = 0.5*((missClass0/m0)+(missClass1/m1))
 ClassifAccu = (Correct/labelsLine)*100;
 ClassifError4= 100-ClassifAccu
 
+
 %% With priors
 % Linear
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'linear','Prior','uniform')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'linear','Prior','uniform')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -228,9 +229,16 @@ ClassError5 = 0.5*((missClass0/m0)+(missClass1/m1))
 ClassifAccu = (Correct/labelsLine)*100;
 ClassifError5 = 100-ClassifAccu
 
+figure;
+subplot(2,4,1);
+bar(1,ClassError1,'b');
+hold on;
+bar(2,ClassifError1,'c');
+
+
 % Diaglinear
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'diaglinear','Prior','uniform')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'diaglinear','Prior','uniform')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -304,8 +312,8 @@ ClassifError7 = 100-ClassifAccu
 
 
 % Diagquadratic
-classifier = fitcdiscr(subfeatures, labels, 'discrimtype', 'diagquadratic','Prior','uniform')
-yhat = predict(classifier,subfeatures);
+classifier = fitcdiscr(features, labels, 'discrimtype', 'diagquadratic','Prior','uniform')
+yhat = predict(classifier,features);
 
 Correct = 0; % Will return the total number of well-classified samples
 [labelsLine,labelsCol] = size(labels); % Returns dimensions of truly cl. as 0
@@ -339,4 +347,51 @@ ClassError8 = 0.5*((missClass0/m0)+(missClass1/m1))
 ClassifAccu = (Correct/labelsLine)*100;
 ClassifError8= 100-ClassifAccu
 
+figure;
+subplot(2,4,1);
+bar(1,ClassError1,'b');
+hold on;
+bar(2,ClassError5,'r');
+set(gca,'xtick',[]);
 
+subplot(2,4,2);
+bar(1,ClassError2,'b');
+hold on;
+bar(2,ClassError6,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,3);
+bar(1,ClassError3,'b');
+hold on;
+bar(2,ClassError7,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,4);
+bar(1,ClassError4,'b');
+hold on;
+bar(2,ClassError8,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,5);
+bar(1,ClassifError1,'b');
+hold on;
+bar(2,ClassifError5,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,6);
+bar(1,ClassifError2,'b');
+hold on;
+bar(2,ClassifError6,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,7);
+bar(1,ClassifError3,'b');
+hold on;
+bar(2,ClassifError7,'r');
+set(gca,'xtick',[]);
+
+subplot(2,4,8);
+bar(1,ClassifError4,'b');
+hold on;
+bar(2,ClassifError8,'r');
+set(gca,'xtick',[]);
