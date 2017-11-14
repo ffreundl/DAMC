@@ -193,8 +193,11 @@ plot(x,y,'r--')
 % the total 2400 features
 
 %% Point 9) Nestd + FFS + ClassifierSelection
-subfeatures20 = features(:,1:120:2400); % Selects 20 features why not rank ??
-outer = cvpartition(labels,'kfold',4);
+
+O = 10;
+
+subfeatures30 = zfeat(:,discrimIndices(1:30)); % Selects 20 features why not rank ??
+outer = cvpartition(labels,'kfold',O);
 
 opt = statset('Display','iter','MaxIter',100);
 
@@ -202,15 +205,15 @@ funLin = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discr
 funDiagLin = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype','diaglinear'), xt)));
 funDiagQuadra = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype','diagquadratic'), xt)));
 
-validationErrorVect = zeros(3,4);
-modelHype=false(3,20,4);
-testError=zeros(3,4);
-for i=1:4
+validationErrorVect = zeros(3,O); 
+modelHype=false(3,30,O);
+testError=zeros(3,O);
+for i=1:O
     %train
     cp_in = cvpartition(labels(outer.training(i)),'kfold',10);
-    [selLin, hstLine] = sequentialfs(funLin, subfeatures20(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
-    [selDiagLin, hstDiagLin] = sequentialfs(funDiagLin, subfeatures20(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
-    [selDiagQuadra, hstDiagQuadra] = sequentialfs(funDiagQuadra, subfeatures20(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
+    [selLin, hstLine] = sequentialfs(funLin, subfeatures30(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
+    [selDiagLin, hstDiagLin] = sequentialfs(funDiagLin, subfeatures30(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
+    [selDiagQuadra, hstDiagQuadra] = sequentialfs(funDiagQuadra, subfeatures30(outer.training(i), :), labels(outer.training(i)), 'cv', cp_in, 'options',opt);
     validationErrorVect(1,i) = hstLine.Crit(end);
     modelHype(1,:,i)=selLin;
     validationErrorVect(2,i) = hstDiagLin.Crit(end);
@@ -218,21 +221,21 @@ for i=1:4
     validationErrorVect(3,i) = hstDiagQuadra.Crit(end);
     modelHype(3,:,i)=selDiagQuadra;
     
-    %test (everything, we'll keep the 4 errors of best model per 4 folds at
+    %test (everything, we'll keep the 10 errors of best model per 4 folds at
     %the end
     
-    classifierLin=fitcdiscr(subfeatures20(outer.training(i),modelHype(1,:,i)),labels(outer.training(i)),'discrimtype','linear');
-    classifierDiaglin=fitcdiscr(subfeatures20(outer.training(i),modelHype(2,:,i)),labels(outer.training(i)),'discrimtype','diaglinear');
-    classifierDiagquad=fitcdiscr(subfeatures20(outer.training(i),modelHype(3,:,i)),labels(outer.training(i)),'discrimtype','diagquadratic');
+    classifierLin=fitcdiscr(subfeatures30(outer.training(i),modelHype(1,:,i)),labels(outer.training(i)),'discrimtype','linear');
+    classifierDiaglin=fitcdiscr(subfeatures30(outer.training(i),modelHype(2,:,i)),labels(outer.training(i)),'discrimtype','diaglinear');
+    classifierDiagquad=fitcdiscr(subfeatures30(outer.training(i),modelHype(3,:,i)),labels(outer.training(i)),'discrimtype','diagquadratic');
     
-    yhatLin=predict(classifierLin,subfeatures20(outer.test(i),modelHype(1,:,i)));
+    yhatLin=predict(classifierLin,subfeatures30(outer.test(i),modelHype(1,:,i)));
     testData=labels(outer.test(i));
     testError(1,i)=classerror(testData,yhatLin);
     
-    yhatDiaglin=predict(classifierDiaglin,subfeatures20(outer.test(i),modelHype(2,:,i)));
+    yhatDiaglin=predict(classifierDiaglin,subfeatures30(outer.test(i),modelHype(2,:,i)));
     testError(2,i)=classerror(testData,yhatDiaglin);
     
-    yhatDiagquad=predict(classifierDiagquad,subfeatures20(outer.test(i),modelHype(3,:,i)));
+    yhatDiagquad=predict(classifierDiagquad,subfeatures30(outer.test(i),modelHype(3,:,i)));
     testError(3,i)=classerror(testData,yhatDiagquad);
 end
 
@@ -240,9 +243,9 @@ testErrorLin=mean(testError(1,:));
 testErrorDiaglin=mean(testError(2,:));
 testErrorDiagQuadra=mean(testError(3,:));
 %% final step
-finalTestErrors=zeros(1,4);
+finalTestErrors=zeros(1,O);
 modelType={'linear','diaglinear','diagquad'};
-for u=1:4
+for u=1:O
     bestModel=find(validationErrorVect(:,u)==min(validationErrorVect(:,u)));
     finalTestErrors(u)=testError(bestModel,u);
 end
@@ -251,18 +254,13 @@ disp(finalTestErrors);
 disp('with mean and sdev')
 disp(mean(finalTestErrors));disp(std(finalTestErrors));
 disp('models are')
-showIndices=1:20;
-for u=1:4
+showIndices=1:30;
+for u=1:O
    bestModel=find(validationErrorVect(:,u)==min(validationErrorVect(:,u)));
    disp(modelType(bestModel)); 
    disp(showIndices(modelHype(bestModel,:,u)));
     
 end
-
-
-
-
-
 
     
     
