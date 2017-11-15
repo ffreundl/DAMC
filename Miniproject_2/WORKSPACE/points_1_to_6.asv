@@ -317,7 +317,7 @@ minClassError = find(ClassErrorVect == min(ClassErrorVect));% Returns the best t
 BestThresh = threshVals(minClassError)
 grid on
 xlabel('Threshold','FontSize',14)
-ylabel('Error [%]','FontSize',14)
+ylabel('Missclassified samples (binary class 0 or 1)','FontSize',14)
 % Our class distribution is not uniform accross the thresholds:
 % they are "spatially" localized along
 % threshold values. We have 25% of class '0' samples - localised as high 
@@ -328,22 +328,12 @@ ylabel('Error [%]','FontSize',14)
 % proportion of class '1' labels is 3 times higher than the class '0'
 % labels, the latter missclassification has few impact over the "perfect"
 % class '1' classification and the overall classification error decreases
-% to a quite low plateau around 20% total error. 
+% to a quite low plateau around 20 total missclassified. 
 % Following the same exact pattern, the CLASS error will follow a different
 % evolution: indeed, this error is class-wise, implying that it will take
 % 0,5(classification_error_class0 + classification_error_class1), so that
 % errors for each class will be computed separately and be normalised by
-% its total true number of labels => CLASS error is unbiased by the proportions!
-% This is why, above a certain BEST threshold (of 1.0522 in the case of feature 497),
-% the class error will increase again. The overall shape is a negative bell
-% thats bottom equals 30% error.
-% This manoeuver is useful to determine whether we use classification or
-% class error, depending on what field the data is involved in. E.g., in
-% the medical field, the class error is better since false negative are
-% really worse than false positive. In our case, this is not relevant and
-% we use classification error on the next steps.
-
- 
+% its total true number of labels => This is why, abo
 %% Scaling up to 2 features at once
 
 % Vector of different features for class 0 and 1 for feature 528 which is

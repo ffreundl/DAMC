@@ -79,17 +79,14 @@ toBePlotted=[testError';optimalValidationErrorVec';optimalTrainingErrorVec];
 boxplotLabels=[ones(size(testError')); 2*ones(size(optimalValidationErrorVec'));3*ones(size(optimalTrainingErrorVec))];
             
 ont=boxplot(toBePlotted,boxplotLabels);
-title('Boxplot of errors over the 3 outer folds');
+title('Boxplot of errors');
 ylabel('Error');
 xtix = {'test error','optimal validation error','optimal training error'};   % Your labels
 xtixloc = [1 2 3];      % Your label locations
 
-set(gca,'XTickMode','auto','XTickLabel',xtix,'XTick',xtixloc, 'FontSize',14);
+set(gca,'XTickMode','auto','XTickLabel',xtix,'XTick',xtixloc);
 
 hold off;
 
-% NB: even if test_median is below trainig_median, we see that the
-% MEANtestError seems to be slightly  higher than the MEAN trainingError, so
-% that our model is stable and doesn't seem to overfit/underfit.
-
-
+% NB: even if test_median is below trainig_median, we see that the test
+% MEAN seems to 

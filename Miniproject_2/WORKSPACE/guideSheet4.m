@@ -22,29 +22,14 @@ for i =1:k
         testingError(j,i)=classerror(labels(testingData),test);
     end
 end
-figure
-ontos1=plot(trainingError,'b');
-hold on
-ontos2=plot(mean(trainingError,2),'b','LineWidth',2);
-ontos3=plot(testingError,'r');
-ontos4=plot(mean(testingError,2),'r','LineWidth',2);
-title('cross-validation errors for different feature number and fisher score');
-ylabel('class error');
-xlabel('number of features');
-legend([ontos1(1),ontos2,ontos3(1),ontos4],'training error per fold','training error mean','testing error per fold','testing error mean');
-
-hold off
 
 fisherOptimum =find(mean(testingError,2)==min(mean(testingError,2)));
 %fisherOptimum2=find(mean(trainingError,2)==min(mean(trainingError,2)));
 
-<<<<<<< HEAD
 disp('best perf for diaglinear')
 disp(fisherOptimum);
 disp(min(mean(testingError,2)));
 
-=======
->>>>>>> d71979afe7f876f41db2e199c6eff150b186d21c
 %%with fisher method
 trainingError2=zeros(n,k);
 testingError2=zeros(n,k);
@@ -63,19 +48,32 @@ for i =1:k
     end
 end
 
+figure;
+subplot(1,2,1)
+ontos1=plot(trainingError,'b');
+hold on
+ontos2=plot(mean(trainingError,2),'b','LineWidth',2);
+ontos3=plot(testingError,'r');
+ontos4=plot(mean(testingError,2),'r','LineWidth',2);
+title('Cross-validation errors for different feature number and fisher score');
+ylabel('Class error');
+xlabel('Number of features');
+legend([ontos1(1),ontos2,ontos3(1),ontos4],'training error per fold','training error mean','testing error per fold','testing error mean');
+grid on
+hold off
 
-figure
+subplot(1,2,2)
 ontos1=plot(trainingError,'b');
 hold on
 %ontos are just plots, this allows to choose the color of the legends
 ontos2=plot(mean(trainingError2,2),'b','LineWidth',2);
 ontos3=plot(testingError2,'r');
 ontos4=plot(mean(testingError2,2),'r','LineWidth',2);
-title('cross-validation errors for different feature number and correlation score');
-ylabel('class error');
-xlabel('number of features');
+title('Cross-validation errors for different feature number and correlation score');
+ylabel('Class error');
+xlabel('Number of features');
 legend([ontos1(1),ontos2,ontos3(1),ontos4],'training error per fold','training error mean','testing error per fold','testing error mean');
-
+grid on
 hold off
 
 
@@ -184,9 +182,9 @@ figure
 plot(randomMeanError','bx');
 hold on
 axis([0 31 0.30 0.70])
-ylabel('error');
-xlabel('number of features');
-title('random classifier mean error');
+ylabel('Error','FontSize', 16);
+xlabel('Number of features','FontSize', 16);
+title('Random classifier mean error', 'FontSize', 18);
 hold off;
 disp('best performance of random classifier is ')
 disp(min(randomMeanError(:)));
@@ -200,12 +198,6 @@ disp(min(randomMeanError(:)));
 %for linear: 23 0.1944
 %pseudoquad: 19 0.1340
 %diagquad: 17 0.1783
-<<<<<<< HEAD
 %the best performance of random is 0.3991
-=======
 %the best performance of random is 0.3991
 
-
-
-
->>>>>>> d71979afe7f876f41db2e199c6eff150b186d21c

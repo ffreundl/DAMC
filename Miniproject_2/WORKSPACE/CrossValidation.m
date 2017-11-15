@@ -278,9 +278,9 @@ for k=1:10
 end
 
 erreur_classi_diaglinear_repartition=mean(classiError_diaglinear_repartition);
-
-classiError_quadri_repartition=zeros(1,10);
-erreur_classi_quadri_repartition=[];
+%%
+classiError_diagquadri_repartition=zeros(1,10);
+erreur_classi_diagquadri_repartition=[];
 
 for k=1:10
    
@@ -295,8 +295,8 @@ for k=1:10
     classiError_diagquadri_repartition(1,k) =  sum(yhat~=labels_test)/yhatLine;
 end
 
-erreur_classi_diagquadri_repartition=mean(classiError_quadri_repartition);
-
+erreur_classi_diagquadri_repartition=mean(classiError_diagquadri_repartition);
+%%
 
 classiError_quadra_repartition=zeros(1,10);
 erreur_classi_quadra_repartition=[];
@@ -404,52 +404,52 @@ erreur_classi_leave_one_quadri_new = mean(classiError_leave_one_quadri);
 %vrai/faux negatifs afin de déterminer la qualité d'un système de classification
 %on utilise un training set et un test set selon la méthode du point 2
 %qu'on crée en respectant les proportion de labels de l'échantillon total
-
+%% Plots
 figure;
-subplot(2,4,1);
+subplot(2,3,1);
 bar(1,erreur_classi_linear,'b');
 hold on;
 bar(2,erreur_classi_linear_repartition,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,2);
+subplot(2,3,2);
 bar(1,erreur_classi_diaglinear,'b');
 hold on;
 bar(2,erreur_classi_diaglinear_repartition,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,3);
+subplot(2,3,3);
 bar(1,erreur_classi_diagquadra,'b');
 hold on;
 bar(2,erreur_classi_diagquadri_repartition,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,4);
-bar(1,erreur_classi_quadra,'b');
-hold on;
-bar(2,erreur_classi_quadra_repartition,'r');
-set(gca,'xtick',[]);
+% subplot(2,4,4);
+% bar(1,erreur_classi_quadra,'b');
+% hold on;
+% bar(2,erreur_classi_quadra_repartition,'r');
+% set(gca,'xtick',[]);
 
-subplot(2,4,5);
+subplot(2,3,4);
 bar(1,erreur_classi_leave_one_linear,'b');
 hold on;
 bar(2,erreur_classi_leave_one_linear_new,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,6);
+subplot(2,3,5);
 bar(1,erreur_classi_leave_one_diaglin,'b');
 hold on;
 bar(2,erreur_classi_leave_one_diaglinear_new,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,7);
+subplot(2,3,6);
 bar(1,erreur_classi_leave_one_diagquadri,'b');
 hold on;
 bar(2,erreur_classi_leave_one_diagquadri_new,'r');
 set(gca,'xtick',[]);
 
-subplot(2,4,8);
-bar(1,erreur_classi_leave_one_quadri,'b');
-hold on;
-bar(2,erreur_classi_leave_one_quadri_new,'r');
-set(gca,'xtick',[]);
+% subplot(2,4,8);
+% bar(1,erreur_classi_leave_one_quadri,'b');
+% hold on;
+% bar(2,erreur_classi_leave_one_quadri_new,'r');
+% set(gca,'xtick',[]);
