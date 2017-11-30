@@ -139,5 +139,21 @@ for i=1:numel(lambda)
     end
     
 end
+%%
+bestPerf=min(validationErrors(:));
+%4.1748e-04
+bestPerfPos=false(numel(lambda),numel(alpha));
+for i=1:numel(lambda)
+    for j=1:numel(alpha)
+        bestPerfPos(i,j)=(validationErrors(i,j)==bestPerf);
+        if(bestPerfPos(i,j))
+            disp(i);disp(j);
+        end
+    end
+end
 
+%we have to take the 11th lambda (0.0014) and the 13th alpha (0.0373)
+disp(trainingErrors(bestPerfPos));
+disp(testErrors(bestPerfpos));
+%training error 3.4660e-04 and test error = performance metric=4.8343e-04
 
